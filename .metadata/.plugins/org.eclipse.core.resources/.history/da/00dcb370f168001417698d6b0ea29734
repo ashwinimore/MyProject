@@ -1,0 +1,59 @@
+package automationFramework;
+import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
+import org.junit.*;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
+
+public class ccda {
+
+	private WebDriver driver;
+	  private String baseUrl;
+	  private boolean acceptNextAlert = true;
+	  private StringBuffer verificationErrors = new StringBuffer();
+	  
+	public ccda() {
+		// TODO Auto-generated constructor stub
+		
+	}
+
+	 @Before
+	  public void setUp() throws Exception {
+	    driver = new FirefoxDriver();
+	    baseUrl = "http://54.200.44.56/";
+	    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+	  }
+
+	  @Test
+	  public void testCcda() throws Exception {
+	    // ERROR: Caught exception [unknown command []]
+
+	// ERROR: Caught exception [unknown command []]
+	// ERROR: Caught exception [unknown command []]
+	driver.get("http://54.200.44.56/web/site/home");
+	// ERROR: Caught exception [unknown command []]
+	driver.findElement(By.linkText("C-CDA Sandbox")).click();
+	driver.findElement(By.linkText("Transport Sandbox")).click();
+	driver.findElement(By.linkText("Provider Directory Sandbox")).click();
+	// ERROR: Caught exception [unknown command []]
+	driver.findElement(By.linkText("QRDA Sandbox")).click();
+	assertEquals("SITE – Home", driver.getTitle());
+	try {
+	  assertEquals("SITE – Home", driver.getTitle());
+	} catch (Error e) {
+	  verificationErrors.append(e.toString());
+	}
+	  }
+
+	  @After
+	  public void tearDown() throws Exception {
+	    driver.quit();
+	    String verificationErrorString = verificationErrors.toString();
+	    if (!"".equals(verificationErrorString)) {
+	      fail(verificationErrorString);
+	    }
+	  }
+}

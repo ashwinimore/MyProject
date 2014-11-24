@@ -1,0 +1,47 @@
+package automationFramework;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class PD {
+	
+	private static WebDriver driver ;
+	   public static void main(String[] args) throws InterruptedException {
+		   
+	        // Create a new instance of the Firefox driver
+	 
+	        driver = new FirefoxDriver();
+	        driver.manage().window().maximize();
+	 
+	        //Put a Implicit wait, this means that any search for elements on the page could take the time the implicit wait is set for before throwing exception
+	 
+	        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+	 
+	        //Launch the Online Store Website
+	 
+	        driver.get("http://54.200.44.56/web/site/provider-directory");
+	        
+	        Thread.sleep(20000);
+	        
+	        driver.get("http://54.200.44.56/web/site/provider-directory-test-tool");
+	        
+	       driver.findElement(By.xpath("//input[@id='endpointUrl']")).sendKeys("http://54.201.181.21/pdti-server/Hpd_Plus_ProviderInformationDirectoryService?wsdl");
+	       driver.findElement(By.xpath("//input[@id='baseDn']")).sendKeys("o=dev.provider-directories.com,dc=hpd");
+	       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
+	      //driver.findElement(By.xpath("//button[@id='testCase']")).click();
+	      //Select select = new Select(driver.findElement(By.xpath("//input[@id='testCase']")));
+	       //select.deselectAll();
+	       //select.selectByVisibleText("run_all_test_cases");
+	    
+	      
+
+	          //wait for 20 seconds 
+	      Thread.sleep(20000);
+	       
+	        driver.quit();
+	        
+	    }
+
+	}

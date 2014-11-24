@@ -1,0 +1,9 @@
+package automationFramework;
+
+public class AutoIt {
+
+	public AutoIt() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
