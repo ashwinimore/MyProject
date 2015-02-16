@@ -1,0 +1,92 @@
+package automationFramework;
+
+import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.*;
+
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Test_DCDT {
+  private WebDriver driver;
+  private String baseUrl;
+  private boolean acceptNextAlert = true;
+  private StringBuffer verificationErrors = new StringBuffer();
+
+  @Before
+  public void setUp() throws Exception {
+    driver = new FirefoxDriver();
+    driver.manage().window().maximize();
+    baseUrl = "http://54.200.44.56/";
+    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void testDCDT() throws Exception {
+    driver.get(baseUrl + "/web/site/home");
+    //driver.findElement(By.linkText("Direct Transport Sandbox")).click();
+    driver.findElement(By.xpath("(//a[contains(text(),'View details »')])[2]")).click();
+    Thread.sleep(5000);    
+    driver.findElement(By.xpath("//html/body/div[3]/div/div/div[2]/div/div/div/div/div/div/div/div/div[1]/div/div[1]/div[2]/a/span/span[1]")).click();
+   
+    driver.findElement(By.xpath("//a[contains(@href,\"#panel_hosting\")]")).click();
+    Thread.sleep(5000); 
+    driver.findElement(By.id("testcase-hosting-direct-addr")).sendKeys("provider1@direct.sitenv.org");
+    driver.findElement(By.id("testcase-hosting-submit")).click();
+    assertEquals("Success: false", driver.findElement(By.cssSelector("#ui-accordion-testcase-results-accordion-panel-1 > div > span")).getText());
+    assertEquals("DNS lookup (recordType=CERT, directAddrName=provider1.direct.sitenv.org) failed (type=HOST_NOT_FOUND).", driver.findElement(By.xpath("//div[@id='ui-accordion-testcase-results-accordion-panel-1']/div[3]/span/ol/li/div/ul/li[2]/div/ul/li")).getText());
+    assertEquals("None", driver.findElement(By.xpath("//div[@id='ui-accordion-testcase-results-accordion-panel-1']/div[4]/span/i")).getText());
+    assertEquals("None", driver.findElement(By.xpath("//div[@id='ui-accordion-testcase-results-accordion-panel-1']/div[5]/span/i")).getText());
+    
+  
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    driver.quit();
+    String verificationErrorString = verificationErrors.toString();
+    if (!"".equals(verificationErrorString)) {
+      fail(verificationErrorString);
+    }
+  }
+
+  private boolean isElementPresent(By by) {
+    try {
+      driver.findElement(by);
+      return true;
+    } catch (NoSuchElementException e) {
+      return false;
+    }
+  }
+
+  private boolean isAlertPresent() {
+    try {
+      driver.switchTo().alert();
+      return true;
+    } catch (NoAlertPresentException e) {
+      return false;
+    }
+  }
+
+  private String closeAlertAndGetItsText() {
+    try {
+      Alert alert = driver.switchTo().alert();
+      String alertText = alert.getText();
+      if (acceptNextAlert) {
+        alert.accept();
+      } else {
+        alert.dismiss();
+      }
+      return alertText;
+    } finally {
+      acceptNextAlert = true;
+    }
+  }
+}

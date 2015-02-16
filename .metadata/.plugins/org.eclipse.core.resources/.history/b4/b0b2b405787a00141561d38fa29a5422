@@ -1,0 +1,132 @@
+package automationFramework;
+
+import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class Direct_Transport {
+  private WebDriver driver;
+  private String baseUrl;
+  private boolean acceptNextAlert = true;
+  private StringBuffer verificationErrors = new StringBuffer();
+
+  @Before
+  public void setUp() throws Exception {
+    driver = new FirefoxDriver();
+    driver.manage().window().maximize();
+    baseUrl = "http://54.200.44.56/";
+    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void testDirectTransport() throws Exception {
+    driver.get(baseUrl + "/web/site/home");
+    driver.findElement(By.xpath("(//a[contains(text(),'View details »')])[2]")).click();
+    driver.findElement(By.cssSelector("span.caption-head")).click();
+    Thread.sleep(5000);
+    driver.get("http://54.200.44.56/web/site/direct-transport-test-tool");
+    
+    driver.findElement(By.linkText("Direct specifications")).click();
+    Thread.sleep(5000);
+    driver.findElement(By.id("anchoruploadfile")).sendKeys("C:\\Users\\amore\\Desktop\\Selenium\\root-ca.crt");
+    driver.findElement(By.id("anchoruploadsubmit")).click();
+    Thread.sleep(5000);
+    
+   
+    
+    driver.findElement(By.id("dLabel")).click();
+    driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div[2]/div[1]/div/div/div/div/div/div/div[3]/div[2]/div[1]/div/div[1]/div/form/div/div/div/div[1]/ul/li/div/ul/li/ul/li[1]/ul/li[1]/ul/li[1]/a")).click();
+    driver.findElement(By.id("precannedCCDAsubmit")).click();
+    driver.findElement(By.className("formErrorContent")).getText().contains("end point is required!");
+    Thread.sleep(5000);
+    
+    driver.findElement(By.id("precannedemail")).sendKeys("Provider1@direct.sitenv.org");
+    driver.findElement(By.id("precannedCCDAsubmit")).click();
+    
+    //Check thunderbird on vmtest to verify email has been received
+    
+ 
+    driver.findElement(By.xpath("//div[@id='main-content']/div[2]")).click();
+    driver.findElement(By.linkText("Choose Your Own Content")).click();
+    Thread.sleep(5000);
+
+    driver.findElement(By.id("ccdauploadfile")).sendKeys("C:\\Users\\amore\\Desktop\\Selenium\\170.314(b)(1)InPt_Discharge Summary CED Type.xml");
+    Thread.sleep(5000);
+    driver.findElement(By.id("ccdauploadsubmit")).click();
+    Thread.sleep(5000);
+    
+    //provider2@direct2.sitenv.org account for receive
+    //driver.findElement(By.id("precannedemail")).clear();
+    driver.findElement(By.id("precannedemail")).sendKeys("provider2@direct2.sitenv.org");
+    driver.findElement(By.id("dLabel")).click();
+    driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div[2]/div[1]/div/div/div/div/div/div/div[3]/div[2]/div[1]/div/div[1]/div/form/div/div/div/div[1]/ul/li/div/ul/li/ul/li[1]/ul/li[1]/ul/li[1]/a")).click();
+    driver.findElement(By.id("precannedCCDAsubmit")).click();
+    Thread.sleep(5000);
+    
+    driver.findElement(By.xpath("(//a[contains(text(),'Direct Project Wiki')])[2]")).click();
+    driver.findElement(By.xpath("(//a[contains(text(),'Direct Certificate Discovery Tool')])[2]")).click();
+    driver.findElement(By.id("directsandbox_releaseNote_popup")).click();
+    driver.findElement(By.cssSelector("button.btn.btn-default")).click();
+    
+    //driver.findElement(By.linkText("direct.sitenv.org Certificate")).click();
+    driver.findElement(By.linkText("BlueButton")).click();
+    driver.findElement(By.xpath("(//a[contains(text(),'BlueButton')])[2]")).click();
+    driver.findElement(By.cssSelector("ul > li > ul > li > a")).click();
+    driver.findElement(By.xpath("(//a[contains(text(),'BlueButton')])[4]")).click();
+    //driver.findElement(By.linkText("(direct.sitenv.org Certificate)")).click();
+    driver.findElement(By.linkText("Trust Bundle")).click();
+    driver.findElement(By.linkText("direct.sitenv.org")).click();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    driver.quit();
+    String verificationErrorString = verificationErrors.toString();
+    if (!"".equals(verificationErrorString)) {
+      fail(verificationErrorString);
+    }
+  }
+
+  private boolean isElementPresent(By by) {
+    try {
+      driver.findElement(by);
+      return true;
+    } catch (NoSuchElementException e) {
+      return false;
+    }
+  }
+
+  private boolean isAlertPresent() {
+    try {
+      driver.switchTo().alert();
+      return true;
+    } catch (NoAlertPresentException e) {
+      return false;
+    }
+  }
+
+  private String closeAlertAndGetItsText() {
+    try {
+      Alert alert = driver.switchTo().alert();
+      String alertText = alert.getText();
+      if (acceptNextAlert) {
+        alert.accept();
+      } else {
+        alert.dismiss();
+      }
+      return alertText;
+    } finally {
+      acceptNextAlert = true;
+    }
+  }
+}

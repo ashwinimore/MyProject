@@ -1,0 +1,92 @@
+package automationFramework;
+
+import static org.junit.Assert.fail;
+import java.util.concurrent.TimeUnit;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import PageObjects.Qrda_Page;
+
+//import org.openqa.selenium.ie.InternetExplorerDriver;
+//import org.openqa.selenium.chrome.ChromeDriver;
+
+
+
+public class Qrda {
+  private WebDriver driver;
+  private String baseUrl;
+  
+  private StringBuffer verificationErrors = new StringBuffer();
+  
+
+  @Before
+  public void setUp() throws Exception {
+    driver = new FirefoxDriver();
+    //System.setProperty("webdriver.ie.driver", "C:\\Program Files\\IEDriverServer\\IEDriverServer.exe");
+   //driver = new InternetExplorerDriver();
+   // System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Chromedriver\\chromedriver.exe");
+   // driver = new ChromeDriver();
+    driver.manage().window().maximize();
+    baseUrl = "http://54.200.44.56/";
+    driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void testQrda() throws Exception {
+	  driver.get(baseUrl);
+	  Qrda_Page.Test_QRDALink_under_Home_Menu(driver);
+	  
+	  Qrda_Page.Verify_Forum_Thumbnail_Link(driver);
+	  Qrda_Page.Verify_IssueTracker_Thumbnail_Link(driver);
+	  Qrda_Page.Verify_SampleRepository_Thumbnail_Link(driver);
+	  Qrda_Page.Verify_CotributeQrda_Thumbnail_Link(driver);
+	  Qrda_Page.Verify_QrdaValidator_Thumbnail_Link(driver);
+	 driver.get("http://54.200.44.56/qrda-validator");
+       
+	//Category dropdown
+	  Qrda_Page.Verify_multiple_selection(driver);
+	
+	//CatI validation
+	Qrda_Page.Testcase_CatI_Validation(driver);
+	
+	
+    
+  //negative cases coverage for catI
+    //Qrda_Page.Verify_CatI_Validation_failure_for_invalid_Sample(driver);
+    
+    
+    //Error pop up
+    Qrda_Page.Invalid_FileType_Sample(driver);
+	Qrda_Page.Validate_Button(driver);
+    Qrda_Page.Verify_Error_On_Invalid_FileType(driver);
+    
+    //CatIII validation
+    Qrda_Page.Testcase_CatIII_Validation(driver);
+    
+    //negative cases coverage for catIII
+   // Qrda_Page.Verify_CatIII_Validation_failure_for_invalid_Sample(driver);
+      
+    //Verify Resource Links
+    Qrda_Page.Verify_ReleaseNote_Link(driver);
+    Qrda_Page.Close_Releaseote_Popup(driver);
+    Qrda_Page.Verify_CatIStandard_Link(driver);
+    Qrda_Page.Verify_CatIIIStandard_Link(driver);
+    
+  }
+
+     
+  @After
+  public void tearDown() throws Exception {
+    driver.quit();
+    String verificationErrorString = verificationErrors.toString();
+    if (!"".equals(verificationErrorString)) {
+      fail(verificationErrorString);
+    }
+  }
+}
+
+
+
+ 

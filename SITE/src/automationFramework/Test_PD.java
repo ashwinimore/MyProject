@@ -1,24 +1,21 @@
-package automationFramework;
+ package automationFramework;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+
 import static org.junit.Assert.assertTrue;
-
 import java.util.concurrent.TimeUnit;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.Select;
+import PageObjects.PD_Page;
+
 
 public class Test_PD {
 	 private WebDriver driver;
 	  private String baseUrl;
-	  private boolean acceptNextAlert = true;
-	  private StringBuffer verificationErrors = new StringBuffer();
+	 
 
 	@Before
 	public void setUp() throws Exception {
@@ -34,11 +31,7 @@ public class Test_PD {
 	public void test() throws Exception{
 		
 		driver.get(baseUrl + "/web/site/home");
-		driver.findElement(By.xpath("(//a[contains(text(),'View details »')])[3]")).click();
-		//driver.get("http://54.200.44.56/web/site/provider-directory");
-        
-        Thread.sleep(4000);
-        
+		        
         driver.get("http://54.200.44.56/web/site/provider-directory-test-tool");
         String j = driver.getTitle();
         System.out.println(j);
@@ -46,114 +39,61 @@ public class Test_PD {
         
         //Negative test coverage
         //Blank wsdl
-        driver.findElement(By.xpath("//input[@id='baseDn']")).sendKeys("o=dev.provider-directories.com,dc=hpd");
-        driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-        driver.findElement(By.className("formErrorContent")).getText().contains("* This field is required");
+         
+        PD_Page.Enter_BaseDN(driver).sendKeys("o=dev.provider-directories.com,dc=hpd");
+        PD_Page.Button_Submit(driver).click();
+        PD_Page.Check_Error_On_Blank_BaseDN(driver).getText().contains("* This field is required");
         
         //Blank BaseDn
-        driver.findElement(By.xpath("//input[@id='endpointUrl']")).sendKeys("http://ec2-54-200-55-97.us-west-2.compute.amazonaws.com/pdti-server/ProviderInformationDirectory?wsdl");
-        driver.findElement(By.xpath("//input[@id='baseDn']")).clear();
-        driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-        driver.findElement(By.className("formErrorContent")).getText().contains("* This field is required");
+        PD_Page.Enter_EndpointUrl(driver).sendKeys("http://ec2-54-200-55-97.us-west-2.compute.amazonaws.com/pdti-server/ProviderInformationDirectory?wsdl");
+        PD_Page.Enter_BaseDN(driver).clear();
+        PD_Page.Button_Submit(driver).click();
+        PD_Page.Check_Error_On_Blank_BaseDN(driver).getText().contains("* This field is required");
         
         //Invalid wsdl     
         
-        driver.findElement(By.xpath("//input[@id='baseDn']")).sendKeys("o=dev.provider-directories.com,dc=hpd");
-        driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-        String bodyText1 = driver.findElement(By.cssSelector("span.label.label-danger")).getText();
+        PD_Page.Enter_BaseDN(driver).sendKeys("o=dev.provider-directories.com,dc=hpd");
+        PD_Page.Button_Submit(driver).click();
+        String bodyText1 = PD_Page.Verify_TestCase_Failure_Incorrect_wsdl(driver).getText();
         assertTrue("Text not found!", bodyText1.contains("FAILED"));
         System.out.println(bodyText1);
-        Thread.sleep(4000);
-        driver.findElement(By.cssSelector("button.btn.btn-default")).click();
         
-        driver.findElement(By.xpath("//input[@id='endpointUrl']")).clear();
+        PD_Page.Close_button_to_close_results_popup(driver).click();
         
-       driver.findElement(By.xpath("//input[@id='endpointUrl']")).sendKeys("http://ec2-54-200-55-97.us-west-2.compute.amazonaws.com/pdti-server/ProviderInformationDirectoryService?wsdl");
+        PD_Page.Enter_EndpointUrl(driver).clear();
+        
+        PD_Page.Enter_EndpointUrl(driver).sendKeys("http://ec2-54-200-55-97.us-west-2.compute.amazonaws.com/pdti-server/ProviderInformationDirectoryService?wsdl");
        
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       String bodyText = driver.findElement(By.cssSelector("span.label.label-success")).getText();
-       assertTrue("Text not found!", bodyText.contains("PASSED"));
-       System.out.println(bodyText);
+        PD_Page.Button_Submit(driver).click();
+      
+       //String bodyText = PD_Page.Verify_TestCase_Success(driver).getText();
+       //assertTrue("Text not found!", bodyText.contains("PASSED"));
+       //System.out.println(bodyText);
        
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
+       PD_Page.Close_button_to_close_results_popup(driver).click();
+      
+       PD_Page.Select_Testcase_from_Dropdown(driver);
+      
+       PD_Page.Verify_multiple_selection(driver);
+      
+       //Test cases
        
-       Select select = new Select(driver.findElement(By.tagName("select")));
-       //select.deselectAll();
+       PD_Page.Testcase_Search_Provider_by_Name(driver);
+       PD_Page.Testcase_Search_Organization_by_Id(driver);
+       PD_Page.Testcase_Search_Service_by_Id(driver);
+       PD_Page.Testcase_Search_Credential_by_Id(driver);
+       PD_Page.Testcase_Find_Individual(driver);
+       PD_Page.Testcase_Find_Uniqe_Individual(driver);
+       PD_Page.Testcase_Find_Organization(driver);
+       PD_Page.Testcase_Find_Unique_Organization(driver);
+       PD_Page.Testcase_Find_Individuals_for_Unique_Organization(driver);
+       PD_Page.Testcase_Find_Organizations_for_Unique_Individual(driver);
+       PD_Page.Testcase_Find_Individuals_and_Organizations(driver);
+       //PD_Page.Testcase_Find_Members_for_Unique_Relationship(driver);
        
-       assertFalse(select.isMultiple());
-       assertEquals(13,select.getOptions().size());
-       Thread.sleep(4000);
-       select.selectByVisibleText("Search Provider by Name");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-       select.selectByVisibleText("Search Organization by Id");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(8000);
-       select.selectByVisibleText("Search Membership by Id");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(5000);
-       select.selectByVisibleText("Search Service by Id");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(5000);
-       select.selectByVisibleText("Search Credential by Id");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(15000);
-       select.selectByVisibleText("Find Individual");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-       select.selectByVisibleText("Find Unique Individual");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-       select.selectByVisibleText("Find Organization");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-       select.selectByVisibleText("Find Unique Organization");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-       select.selectByVisibleText("Find Organizations for Unique Individual");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-       select.selectByVisibleText("Find Individuals for Unique Organization");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-       select.selectByVisibleText("Find Individuals and Organizations");
-       driver.findElement(By.xpath("//button[@id='querySubmit']")).click();
-       Thread.sleep(4000);
-       driver.findElement(By.cssSelector("span.label.label-success")).getText().contains("PASSED");
-       driver.findElement(By.cssSelector("button.btn.btn-default")).click();
-       Thread.sleep(4000);
-             
+      
+       
+
        driver.findElement(By.id("providerDirectory_releaseNote_popup")).click();
        driver.findElement(By.cssSelector("#pdReleaseModal > div.modal-dialog > div.modal-content > div.modal-footer > button.btn.btn-default")).click();
        driver.findElement(By.linkText("IHE HPD Specifications")).click();
